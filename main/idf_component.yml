@@ -1,0 +1,31 @@
+dependencies:
+  idf: ">=5.4"
+
+  # WiFi remote — ESP32-P4 has no built-in WiFi; this component routes esp_wifi_*
+  # calls to the ESP32-C6 coprocessor over SDIO.
+  espressif/esp_wifi_remote:
+    version: ">=0.1.12"
+    rules:
+      - if: "target in [esp32p4]"
+
+  # esp-hosted — SDIO transport layer between P4 (host) and C6 (slave)
+  espressif/esp_hosted:
+    version: "*"
+    rules:
+      - if: "target in [esp32p4]"
+
+  # Waveshare ESP32-P4-WIFI6-Touch-LCD-4B BSP
+  # Pulls in: ST7703 display driver, GT911 touch, LVGL port, ESP-IDF >=5.4
+  waveshare/esp32_p4_wifi6_touch_lcd_4b: "^1.0.1"
+
+  # ESP-UI (esp-brookesia) v0.2.x - phone launcher shell
+  # LVGL 8.x based
+  espressif/esp-ui:
+    version: "0.2.*"
+
+  # WebSocket client — moved out of IDF core in v5.x, now a managed component.
+  # Resolved to v1.6.1. CMake REQUIRES name: esp_websocket_client
+  espressif/esp_websocket_client: "*"
+
+  # mDNS — service discovery for SignalK servers on the local network
+  espressif/mdns: "*"

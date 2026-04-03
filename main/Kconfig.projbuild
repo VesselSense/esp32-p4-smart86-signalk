@@ -1,0 +1,53 @@
+menu "SignalK Instrument Panel"
+
+    config WIFI_SSID
+        string "WiFi SSID"
+        default "YourSSID"
+        help
+            SSID of the WiFi network to connect to.
+
+    config WIFI_PASSWORD
+        string "WiFi Password"
+        default "YourPassword"
+        help
+            Password for the WiFi network.
+
+    config SIGNALK_WS_URI
+        string "SignalK WebSocket URI"
+        default "ws://192.168.1.100:3000/signalk/v1/stream?subscribe=none"
+        help
+            Full WebSocket URI for the SignalK server stream endpoint.
+            For dev: ws://<mac-local-ip>:3000/signalk/v1/stream?subscribe=none
+            Start the dev server: cd ../signalk-server && node bin/signalk-server --sample-n2k-data --override-timestamps
+            Find Mac IP: ipconfig getifaddr en0
+
+    config SIGNALK_MDNS_TIMEOUT_MS
+        int "mDNS discovery timeout (ms)"
+        default 3000
+        range 1000 10000
+        help
+            How long to wait for mDNS service discovery before falling back
+            to the configured WebSocket URI.
+
+    config SIGNALK_RECONNECT_MS
+        int "SignalK reconnect interval (ms)"
+        default 5000
+        range 1000 30000
+        help
+            Time in milliseconds to wait before reconnecting after disconnect.
+
+    config DISPLAY_UPDATE_MS
+        int "Display update interval (ms)"
+        default 1000
+        range 250 5000
+        help
+            How often the instrument display refreshes from live data.
+
+    config DATA_STALE_MS
+        int "Data stale threshold (ms)"
+        default 10000
+        range 2000 60000
+        help
+            Data older than this shows as '--' on the display.
+
+endmenu

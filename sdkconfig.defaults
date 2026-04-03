@@ -1,0 +1,69 @@
+# ESP32-P4 base config
+CONFIG_IDF_TARGET="esp32p4"
+
+# PSRAM - 8MB HEX (16-line) PSRAM on ESP32-P4
+# P4 uses SPIRAM_MODE_HEX (only option) and SPIRAM_SPEED_200M
+# 200MHz requires IDF_EXPERIMENTAL_FEATURES; 20MHz default causes DSI DPI underrun
+CONFIG_IDF_EXPERIMENTAL_FEATURES=y
+CONFIG_SPIRAM=y
+CONFIG_SPIRAM_MODE_HEX=y
+CONFIG_SPIRAM_SPEED_200M=y
+CONFIG_SPIRAM_USE_MALLOC=y
+CONFIG_SPIRAM_MALLOC_ALWAYSINTERNAL=16384
+
+# Flash
+CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+
+# WiFi via ESP32-C6 coprocessor (esp-hosted over SDIO)
+# DO NOT set CONFIG_ESP_HOST_WIFI_ENABLED — it stubs the PHY and force-disables esp_wifi_remote
+# esp_wifi_remote + esp_hosted route all esp_wifi_* calls to the C6 over SDIO
+CONFIG_SLAVE_IDF_TARGET_ESP32C6=y
+CONFIG_ESP_WIFI_STATIC_RX_BUFFER_NUM=4
+CONFIG_ESP_WIFI_DYNAMIC_RX_BUFFER_NUM=8
+CONFIG_ESP_WIFI_DYNAMIC_TX_BUFFER=y
+CONFIG_ESP_WIFI_TX_BUFFER_TYPE=1
+
+# LVGL memory - use malloc (backed by 32MB PSRAM) instead of 32KB internal pool
+CONFIG_LV_MEM_CUSTOM=y
+
+# LVGL fonts (required for instrument display)
+CONFIG_LV_FONT_MONTSERRAT_14=y
+CONFIG_LV_FONT_MONTSERRAT_16=y
+CONFIG_LV_FONT_MONTSERRAT_24=y
+CONFIG_LV_FONT_MONTSERRAT_28=y
+CONFIG_LV_FONT_MONTSERRAT_36=y
+CONFIG_LV_FONT_MONTSERRAT_48=y
+CONFIG_LV_FONT_FMT_TXT_LARGE=y
+CONFIG_LV_USE_FONT_PLACEHOLDER=y
+
+# LVGL features
+CONFIG_LV_USE_ARC=y
+CONFIG_LV_USE_LABEL=y
+CONFIG_LV_USE_BAR=y
+CONFIG_LV_USE_LINE=y
+CONFIG_LV_USE_CANVAS=y
+
+# FreeRTOS
+CONFIG_FREERTOS_HZ=1000
+CONFIG_FREERTOS_UNICORE=n
+
+# Logging
+CONFIG_LOG_DEFAULT_LEVEL_INFO=y
+
+# WiFi credentials — update via: idf.py menuconfig → SignalK Instrument Panel
+# ESP32-C6 supports 2.4GHz only
+CONFIG_WIFI_SSID="YourSSID"
+CONFIG_WIFI_PASSWORD="YourPassword"
+
+# Fallback URI — only used if mDNS discovery fails to find a SignalK server
+# Primary discovery is automatic via mDNS (_signalk-ws._tcp)
+CONFIG_SIGNALK_WS_URI="ws://192.168.1.100:3000/signalk/v1/stream?subscribe=none"
+
+# WebSocket TLS - allow insecure for dev (ngrok cert)
+CONFIG_ESP_TLS_INSECURE=y
+CONFIG_ESP_TLS_SKIP_SERVER_CERT_VERIFY=y
+
+# Stack sizes for websocket task
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=8192

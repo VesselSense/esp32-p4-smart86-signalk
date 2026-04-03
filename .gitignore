@@ -1,0 +1,17 @@
+# ESP-IDF build artifacts
+build/
+.pio/
+.vscode/
+sdkconfig
+sdkconfig.old
+dependencies.lock
+managed_components/
+
+# Credentials (never commit)
+main/credentials.h
+
+# Simulator
+simulator/build/
+
+# macOS
+.DS_Store
