@@ -9,8 +9,9 @@ dependencies:
       - if: "target in [esp32p4]"
 
   # esp-hosted — SDIO transport layer between P4 (host) and C6 (slave)
+  # Pinned to 2.12.x — 2.12.6 broke SDIO mempool init on this board.
   espressif/esp_hosted:
-    version: "*"
+    version: "~2.12.3"
     rules:
       - if: "target in [esp32p4]"
 
@@ -24,8 +25,8 @@ dependencies:
     version: "0.2.*"
 
   # WebSocket client — moved out of IDF core in v5.x, now a managed component.
-  # Resolved to v1.6.1. CMake REQUIRES name: esp_websocket_client
-  espressif/esp_websocket_client: "*"
+  # CMake REQUIRES name: esp_websocket_client
+  espressif/esp_websocket_client: "~1.6.0"
 
   # mDNS — service discovery for SignalK servers on the local network
-  espressif/mdns: "*"
+  espressif/mdns: "~1.11.0"
