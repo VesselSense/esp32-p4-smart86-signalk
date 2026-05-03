@@ -9,9 +9,11 @@ dependencies:
       - if: "target in [esp32p4]"
 
   # esp-hosted — SDIO transport layer between P4 (host) and C6 (slave)
-  # Pinned to 2.12.x — 2.12.6 broke SDIO mempool init on this board.
+  # Pinned exactly to 2.12.3 — 2.12.6 crashes at sdio_mempool_create on this board.
+  # The previous "~2.12.3" allowed >=2.12.3 <2.13.0 (IDF semver tilde) which let
+  # 2.12.6 in. Use exact "==" to prevent any patch-level drift.
   espressif/esp_hosted:
-    version: "~2.12.3"
+    version: "==2.12.3"
     rules:
       - if: "target in [esp32p4]"
 
