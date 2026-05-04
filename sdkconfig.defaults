@@ -5,8 +5,14 @@ CONFIG_IDF_TARGET="esp32p4"
 # with v0.x or v1.x dies. IDF v5.5 bumped the default minimum to v3.1, which
 # bakes a chip-rev gate into the bootloader that bricks older silicon at boot
 # (esptool --force only bypasses the host-side check; the bootloader's own
-# runtime check still aborts). Pin to v0.0 so any IDF version produces a
-# bootloader that runs on every shipped revision.
+# runtime check still aborts).
+#
+# IDF v5.5 also gated the v0.x/v1.x choices behind ESP32P4_SELECTS_REV_LESS_V3.
+# Without that flag, REV_MIN_0/1/100 are invisible to Kconfig and silently
+# ignored if set in defaults — both lines below are required on v5.5+.
+# (On v5.4 the SELECTS_REV_LESS_V3 line is unrecognized and ignored as a
+# warning, so this stays forward- and backward-compatible.)
+CONFIG_ESP32P4_SELECTS_REV_LESS_V3=y
 CONFIG_ESP32P4_REV_MIN_0=y
 
 # PSRAM - 8MB HEX (16-line) PSRAM on ESP32-P4
