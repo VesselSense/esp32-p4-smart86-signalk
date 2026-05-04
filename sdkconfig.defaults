@@ -1,6 +1,14 @@
 # ESP32-P4 base config
 CONFIG_IDF_TARGET="esp32p4"
 
+# Silicon revision floor — Waveshare ESP32-P4-WIFI6-Touch-LCD-4B boards ship
+# with v0.x or v1.x dies. IDF v5.5 bumped the default minimum to v3.1, which
+# bakes a chip-rev gate into the bootloader that bricks older silicon at boot
+# (esptool --force only bypasses the host-side check; the bootloader's own
+# runtime check still aborts). Pin to v0.0 so any IDF version produces a
+# bootloader that runs on every shipped revision.
+CONFIG_ESP32P4_REV_MIN_0=y
+
 # PSRAM - 8MB HEX (16-line) PSRAM on ESP32-P4
 # P4 uses SPIRAM_MODE_HEX (only option) and SPIRAM_SPEED_200M
 # 200MHz requires IDF_EXPERIMENTAL_FEATURES; 20MHz default causes DSI DPI underrun
