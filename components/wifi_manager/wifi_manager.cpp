@@ -235,6 +235,9 @@ static void wifi_event_handler(void *arg, esp_event_base_t base,
             ESP_LOGI(TAG, "WiFi associated with AP");
             break;
         case WIFI_EVENT_SCAN_DONE: {
+            /* ESP-Hosted also posts SCAN_DONE for the blocking boot scan, after
+             * its records were already harvested; re-reading would wipe them. */
+            if (!s_scanning) break;
             uint16_t ap_count = 0;
             esp_wifi_scan_get_ap_num(&ap_count);
             if (ap_count > WIFI_MGR_MAX_SCAN) ap_count = WIFI_MGR_MAX_SCAN;
