@@ -340,6 +340,7 @@ extern "C" void app_main(void)
     ESP_UI_PhoneStylesheet_t stylesheet = ESP_UI_PHONE_DEFAULT_DARK_STYLESHEET();
     stylesheet.core.screen_size = ESP_UI_STYLE_SIZE_RECT(BSP_LCD_H_RES, BSP_LCD_V_RES);
     ESP_UI_CHECK_FALSE_EXIT(phone->addStylesheet(stylesheet), "Add stylesheet failed");
+    ESP_UI_CHECK_FALSE_EXIT(phone->activateStylesheet(stylesheet), "Activate stylesheet failed");
 
     ESP_UI_CHECK_FALSE_EXIT(phone->setTouchDevice(bsp_display_get_input_dev()),
                             "Set touch device failed");
