@@ -241,6 +241,12 @@ static void ws_event_handler(void *handler_args, esp_event_base_t base,
             s_state = SK_STATE_DISCONNECTED;
             break;
 
+        case WEBSOCKET_EVENT_CLOSED:
+            // Server-initiated close (e.g. server restart)
+            ESP_LOGW(TAG, "SignalK closed the connection");
+            s_state = SK_STATE_DISCONNECTED;
+            break;
+
         default:
             break;
     }
@@ -282,6 +288,8 @@ void signalk_client_start(const char *uri)
     ws_cfg.task_stack                 = 8192;
     ws_cfg.reconnect_timeout_ms       = CONFIG_SIGNALK_RECONNECT_MS;
     ws_cfg.disable_auto_reconnect     = false;
+    // Without this the client task exits for good when the server closes
+    ws_cfg.enable_close_reconnect     = true;
     ws_cfg.skip_cert_common_name_check = true;
 
     s_ws = esp_websocket_client_init(&ws_cfg);

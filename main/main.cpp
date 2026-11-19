@@ -19,6 +19,7 @@
 #include "esp_event.h"
 #include "esp_wifi.h"
 #include "esp_sntp.h"
+#include "esp_timer.h"
 #include "mdns.h"
 #include <time.h>
 #include "bsp/esp32_p4_wifi6_touch_lcd_4b.h"
@@ -181,12 +182,26 @@ static void status_timer_cb(lv_timer_t *t)
         }
     }
 
+    /* Watchdog: if never reaching CONNECTED for a minute in any other state
+     * (e.g. a client stuck after a server restart), force a fresh discovery. */
+    static uint32_t s_not_connected_since = 0;
+    uint32_t now_ms = (uint32_t)(esp_timer_get_time() / 1000);
+    if (signalk_client_is_connected() || wifi_manager_get_state() != WIFI_MGR_CONNECTED) {
+        s_not_connected_since = now_ms;
+    } else if (now_ms - s_not_connected_since > 60000) {
+        ESP_LOGW(TAG, "SignalK not connected for 60 s - restarting client");
+        s_not_connected_since = now_ms;
+        signalk_client_stop();
+    }
+
     /* Also try initial discovery if WiFi is connected but SignalK never found */
     if (signalk_client_get_state() == SK_STATE_DISCONNECTED &&
         wifi_manager_get_state() == WIFI_MGR_CONNECTED &&
         !signalk_client_is_connected()) {
         const char *uri = discover_signalk_uri();
         if (uri) {
+            // Replace any existing client; start() is a no-op while one exists
+            signalk_client_stop();
             signalk_client_start(uri);
             signalk_auth_init(uri);
         }
